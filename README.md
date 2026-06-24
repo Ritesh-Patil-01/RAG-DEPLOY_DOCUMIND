@@ -1,14 +1,7 @@
 # Assignment 3 - FastAPI Text Chunking API
-
-## Features
-- Welcome endpoint
-- Text chunking using RecursiveCharacterTextSplitter
-- Custom chunk_size and chunk_overlap
-- Input validation
-- Error handling
-
 ## Run Locally
 pip install -r requirements.txt
+
 uvicorn main:app --reload
 
 ## API Docs
