@@ -1,5 +1,15 @@
+# Virtual environment
 env/
+# Secrets ---> api keys , etc.. 
 .env
+# Python cache
 __pycache__/
 *.pyc
+# VS Code
 .vscode/
+# Generated videos
+videos/
+# Temporary Manim scripts
+generated_scripts/
+# Manim render output
+media/
