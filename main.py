@@ -16,6 +16,9 @@ import re
 
 
 app = FastAPI()               # creates fastAPI application 
+Path("videos").mkdir(exist_ok=True)
+Path("media").mkdir(exist_ok=True)
+Path("generated_scripts").mkdir(exist_ok=True)
 app.mount("/videos", StaticFiles(directory="videos"), name="videos")
 
 # welcome message :--->
