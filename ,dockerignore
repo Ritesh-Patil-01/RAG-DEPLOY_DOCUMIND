@@ -1,0 +1,8 @@
+env/
+.git/
+.vscode/
+__pycache__/
+media/
+videos/
+generated_scripts/
+.env

@@ -19,7 +19,7 @@ app = FastAPI()               # creates fastAPI application
 app.mount("/videos", StaticFiles(directory="videos"), name="videos")
 
 # welcome message :--->
-@app.get("/")                 # this is called decorator 
+@app.get("/")                 # decorator 
 def home():
     return {"message":"Welcome"}
 
