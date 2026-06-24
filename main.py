@@ -1,4 +1,3 @@
-# imports libraries :---> 
 from fastapi import FastAPI 
 from fastapi import HTTPException
 from chunk import split_text  
