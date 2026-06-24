@@ -171,5 +171,4 @@ def generate_video(data : AnimationRequest) :
     video_destination = Path(f"videos/{file_id}.mp4")
     shutil.copy(video_source, video_destination)          
 
-    return{"status":"sucess",
-           "video_url":f"http://127.0.0.1:8000/videos/{file_id}.mp4"}
+    return{"status":"success","video_url":f"/videos/{file_id}.mp4"}
