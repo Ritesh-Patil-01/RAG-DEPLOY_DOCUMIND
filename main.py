@@ -7,6 +7,7 @@ from pypdf import PdfReader
 from groq import Groq
 from dotenv import load_dotenv
 from fastapi.staticfiles import StaticFiles
+from fastapi import Request
 from pathlib import Path
 import shutil 
 import os
@@ -139,7 +140,7 @@ def generate_manim(data: AnimationRequest) :
 
 # 6.e.main ---> ( this is the main e) 
 @app.post("/generate_video")
-def generate_video(data : AnimationRequest) :
+def generate_video(request: Request, data : AnimationRequest) :
     prompt =f"""generate one complete manim community edition script.
                 requirements :-->
                 exactly one scene class .
@@ -171,4 +172,6 @@ def generate_video(data : AnimationRequest) :
     video_destination = Path(f"videos/{file_id}.mp4")
     shutil.copy(video_source, video_destination)          
 
-    return{"status":"success","video_url":f"/videos/{file_id}.mp4"}
+    base_url = str(request.base_url).rstrip("/")
+
+    return {"status": "success","video_url": f"{base_url}/videos/{file_id}.mp4"}
