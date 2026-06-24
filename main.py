@@ -87,7 +87,7 @@ async def read_pdf(file : UploadFile=File(...)) :
 
 # 6.c --->
 @app.post("/ask") 
-def ask_LLM(data: QueryRequest) :
+def question_LLM(data: QueryRequest) :
     if not data.query.strip() :
         raise HTTPException(status_code=400,detail="query cant be empty")
     
