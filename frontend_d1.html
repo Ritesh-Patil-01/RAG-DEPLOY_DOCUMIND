@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DocuMind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c171b; --panel:#12232a; --panel2:#183039; --line:#24434e;
+  --text:#e8f1f2; --muted:#8fabb2;
+  --teal:#2ec4b6; --amber:#f5b942; --coral:#ff7a59; --sky:#5aa9ff; --lime:#a3d95b;
+  --c:var(--teal);
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font:16px/1.55 "Source Sans 3",system-ui,sans-serif;display:grid;grid-template-columns:260px 1fr;grid-template-rows:auto 1fr}
+h1,h2,.brand{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+
+/* top bar */
+header{grid-column:1/3;display:flex;gap:14px;align-items:center;padding:12px 22px;border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.02em;margin-right:auto}
+.brand b{color:var(--amber)}
+.api{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.api input{width:min(360px,40vw);background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 10px;font:13px "JetBrains Mono",monospace}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.dot.ok{background:var(--lime);box-shadow:0 0 0 4px #a3d95b22}.dot.bad{background:var(--coral);box-shadow:0 0 0 4px #ff7a5922}
+.mini{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 10px;cursor:pointer;font:500 13px "Source Sans 3"}
+.mini:hover{border-color:var(--muted)}
+
+/* sidebar */
+nav{padding:18px 12px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px;background:var(--panel)}
+nav button{display:flex;gap:12px;align-items:center;text-align:left;padding:11px 12px;border-radius:10px;border:0;background:none;color:var(--muted);cursor:pointer;font:600 15px "Source Sans 3"}
+nav button i{width:12px;height:12px;border-radius:4px;background:var(--k);flex:none}
+nav button small{display:block;font-weight:400;font-size:12.5px;opacity:.8}
+nav button:hover{background:var(--panel2);color:var(--text)}
+nav button.on{background:var(--panel2);color:var(--text);box-shadow:inset 3px 0 0 var(--k)}
+
+/* main */
+main{overflow:auto;padding:34px clamp(18px,4vw,56px)}
+.view{display:none;max-width:860px}.view.on{display:block}
+.view h2{font-size:34px;letter-spacing:-.02em;line-height:1.1;margin-bottom:6px}
+.view h2::after{content:"";display:block;width:56px;height:5px;border-radius:3px;background:var(--c);margin-top:12px}
+.lead{color:var(--muted);margin:14px 0 22px;max-width:60ch}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+textarea,input[type=number]{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:12px;font:16px "Source Sans 3";resize:vertical}
+textarea:focus,input:focus{border-color:var(--c);outline:none}
+.row{display:flex;gap:12px;margin-top:12px;align-items:end;flex-wrap:wrap}
+.row>div{flex:1;min-width:120px}
+.go{background:var(--c);color:#06120f;border:0;border-radius:10px;padding:12px 22px;font:700 15px "Bricolage Grotesque";cursor:pointer;margin-left:auto}
+.go:hover{filter:brightness(1.1)}.go:disabled{opacity:.5;cursor:wait}
+.out{margin-top:20px}
+.msg{padding:14px 16px;border-radius:var(--r);margin-bottom:12px;white-space:pre-wrap}
+.msg.q{background:var(--panel2);border:1px solid var(--line);margin-left:12%}
+.msg.a{background:#2ec4b614;border:1px solid #2ec4b655}
+.err{background:#ff7a5915;border:1px solid var(--coral);color:#ffc2b3;padding:12px 14px;border-radius:10px}
+.wait{color:var(--muted);display:flex;gap:10px;align-items:center}
+.wait::before{content:"";width:16px;height:16px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--c);animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+pre{background:#081115;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:16px;overflow:auto;font:14px/1.6 "JetBrains Mono",monospace;position:relative}
+.copy{position:absolute;right:10px;top:10px}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:34px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+.drop:hover,.drop.over{border-color:var(--c);color:var(--text);background:#2ec4b60d}
+.stat{display:inline-block;background:var(--c);color:#06120f;font-weight:700;border-radius:8px;padding:3px 10px;margin:0 8px 14px 0;font-size:14px}
+.chunk{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:15px}
+.chunk span{display:block;font:500 12px "JetBrains Mono";color:var(--c);margin-bottom:4px}
+video{width:100%;border-radius:var(--r);border:1px solid var(--line);background:#000}
+@media(max-width:760px){
+  body{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}
+  header{grid-column:1}nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  nav button small{display:none}nav button{white-space:nowrap}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Docu<b>Mind</b></div>
+  <div class="api"><span class="dot" id="dot"></span>
+    <input id="base" aria-label="Backend URL" spellcheck="false">
+    <button class="mini" id="local">Use localhost</button>
+  </div>
+</header>
+
+<nav id="nav">
+  <button data-v="ask" style="--k:var(--teal)" class="on"><i></i><span>Ask AI<small>Chat with the LLM</small></span></button>
+  <button data-v="docs" style="--k:var(--amber)"><i></i><span>Documents<small>PDF or CSV to chunks</small></span></button>
+  <button data-v="chunk" style="--k:var(--sky)"><i></i><span>Chunk text<small>Split pasted text</small></span></button>
+  <button data-v="code" style="--k:var(--lime)"><i></i><span>Code<small>Idea to code</small></span></button>
+  <button data-v="manim" style="--k:var(--coral)"><i></i><span>Manim script<small>Animation code only</small></span></button>
+  <button data-v="video" style="--k:#ff5d8f"><i></i><span>Video<small>Idea to rendered MP4</small></span></button>
+</nav>
+
+<main>
+  <section class="view on" id="v-ask" style="--c:var(--teal)">
+    <h2>Ask anything</h2>
+    <p class="lead">Send a question to Llama 3.3 through your backend.</p>
+    <div id="chat"></div>
+    <div class="card"><label for="q">Your question</label><textarea id="q" rows="3" placeholder="Explain how vector search works"></textarea>
+      <div class="row"><button class="go" id="askBtn">Ask</button></div></div>
+  </section>
+
+  <section class="view" id="v-docs" style="--c:var(--amber)">
+    <h2>Split a document</h2>
+    <p class="lead">Upload a PDF or CSV. The backend reads it and returns text chunks.</p>
+    <label class="drop" id="drop" for="file">Drop a file here or click to choose<input id="file" type="file" accept=".pdf,.csv" hidden></label>
+    <div class="out" id="docsOut"></div>
+  </section>
+
+  <section class="view" id="v-chunk" style="--c:var(--sky)">
+    <h2>Chunk your text</h2>
+    <p class="lead">Paste text and choose how big each chunk is and how much neighbours overlap.</p>
+    <div class="card"><label for="ct">Text</label><textarea id="ct" rows="6"></textarea>
+      <div class="row"><div><label for="cs">Chunk size</label><input id="cs" type="number" value="50" min="1"></div>
+      <div><label for="co">Overlap</label><input id="co" type="number" value="10" min="0"></div>
+      <button class="go" id="chunkBtn">Split text</button></div></div>
+    <div class="out" id="chunkOut"></div>
+  </section>
+
+  <section class="view" id="v-code" style="--c:var(--lime)">
+    <h2>Generate code</h2>
+    <p class="lead">Describe what the program should do. You get code only, no explanations.</p>
+    <div class="card"><label for="ci">Idea</label><textarea id="ci" rows="3" placeholder="A Python function that checks if a string is a palindrome"></textarea>
+      <div class="row"><button class="go" id="codeBtn">Generate code</button></div></div>
+    <div class="out" id="codeOut"></div>
+  </section>
+
+  <section class="view" id="v-manim" style="--c:var(--coral)">
+    <h2>Manim script</h2>
+    <p class="lead">Get Manim Community Edition code for an animation idea. Nothing is rendered.</p>
+    <div class="card"><label for="mi">Animation idea</label><textarea id="mi" rows="3" placeholder="A circle turning into a square"></textarea>
+      <div class="row"><button class="go" id="manimBtn">Generate script</button></div></div>
+    <div class="out" id="manimOut"></div>
+  </section>
+
+  <section class="view" id="v-video" style="--c:#ff5d8f">
+    <h2>Make a video</h2>
+    <p class="lead">The backend writes a Manim scene and renders it. This can take a minute or more.</p>
+    <div class="card"><label for="vi">Animation idea</label><textarea id="vi" rows="3" placeholder="Show the Pythagorean theorem with squares on each side"></textarea>
+      <div class="row"><button class="go" id="videoBtn">Render video</button></div></div>
+    <div class="out" id="videoOut"></div>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s), esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LIVE="https://documind-rag-api-rp.onrender.com", LOCAL="http://127.0.0.1:8000";
+const base=$("#base"); base.value=localStorage.getItem("dm_base")||LIVE;
+const API=()=>base.value.trim().replace(/\/+$/,"");
+
+async function ping(){
+  const d=$("#dot"); d.className="dot";
+  try{ const r=await fetch(API()+"/"); d.className="dot "+(r.ok?"ok":"bad"); }catch{ d.className="dot bad"; }
+}
+base.addEventListener("change",()=>{localStorage.setItem("dm_base",API());ping()});
+$("#local").onclick=()=>{base.value=LOCAL;base.dispatchEvent(new Event("change"))};
+ping();
+
+$("#nav").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  document.querySelectorAll("nav button,.view").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); $("#v-"+b.dataset.v).classList.add("on");
+});
+
+async function call(path,opts){
+  const r=await fetch(API()+path,opts);
+  let j; try{ j=await r.json() }catch{ j={} }
+  if(!r.ok) throw new Error(typeof j.detail==="string"?j.detail:"Request failed ("+r.status+")");
+  return j;
+}
+const post=(p,body)=>call(p,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+const fail=e=>`<div class="err">${esc(e.message==="Failed to fetch"?"Cannot reach the backend. Check the URL above and that CORS is enabled on the server.":e.message)}</div>`;
+
+function run(btn,out,wait,fn){
+  return async()=>{
+    btn.disabled=true; out.innerHTML=`<div class="wait">${wait}</div>`;
+    try{ out.innerHTML=await fn() }catch(e){ out.innerHTML=fail(e) }
+    btn.disabled=false;
+  };
+}
+const codeBlock=t=>`<pre><button class="mini copy" onclick="navigator.clipboard.writeText(this.nextElementSibling.textContent);this.textContent='Copied'">Copy</button><code>${esc(t.replace(/^```\w*\n?|```$/g,"").trim())}</code></pre>`;
+const chunks=(list,total)=>`<span class="stat">${total} chunks</span>`+list.map((c,i)=>`<div class="chunk"><span>Chunk ${i+1}</span>${esc(c)}</div>`).join("");
+
+// Ask
+$("#askBtn").onclick=async()=>{
+  const q=$("#q").value.trim(); if(!q) return;
+  const chat=$("#chat"), btn=$("#askBtn"); btn.disabled=true; $("#q").value="";
+  chat.insertAdjacentHTML("beforeend",`<div class="msg q">${esc(q)}</div>`);
+  const a=document.createElement("div"); a.className="msg a"; a.innerHTML='<div class="wait">Thinking</div>'; chat.append(a);
+  try{ const j=await post("/ask",{query:q}); a.textContent=j.answer }catch(e){ a.outerHTML=fail(e) }
+  btn.disabled=false;
+};
+
+// Documents
+async function upload(f){
+  if(!f) return; const out=$("#docsOut"); out.innerHTML=`<div class="wait">Reading ${esc(f.name)}</div>`;
+  const ext=f.name.toLowerCase().endsWith(".pdf")?"/pdf":f.name.toLowerCase().endsWith(".csv")?"/csv":null;
+  if(!ext){ out.innerHTML=`<div class="err">Only .pdf and .csv files are supported.</div>`; return }
+  const fd=new FormData(); fd.append("file",f);
+  try{ const j=await call(ext,{method:"POST",body:fd}); out.innerHTML=`<span class="stat">${esc(j.filename)}</span>`+chunks(j.chunks,j.total_chunks) }
+  catch(e){ out.innerHTML=fail(e) }
+}
+$("#file").onchange=e=>upload(e.target.files[0]);
+const drop=$("#drop");
+["dragover","dragenter"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add("over")}));
+["dragleave","drop"].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove("over")}));
+drop.addEventListener("drop",e=>upload(e.dataTransfer.files[0]));
+
+// Chunk text
+$("#chunkBtn").onclick=run($("#chunkBtn"),$("#chunkOut"),"Splitting",async()=>{
+  const j=await post("/chunk",{text:$("#ct").value,chunk_size:+$("#cs").value,chunk_overlap:+$("#co").value});
+  return chunks(j.chunks,j.total_chunks);
+});
+// Code + Manim
+$("#codeBtn").onclick=run($("#codeBtn"),$("#codeOut"),"Writing code",async()=>codeBlock((await post("/generate_code",{idea:$("#ci").value})).generate_code));
+$("#manimBtn").onclick=run($("#manimBtn"),$("#manimOut"),"Writing script",async()=>codeBlock((await post("/generate_manim",{idea:$("#mi").value})).manim_code));
+// Video
+$("#videoBtn").onclick=run($("#videoBtn"),$("#videoOut"),"Rendering. Keep this tab open",async()=>{
+  const j=await post("/generate_video",{idea:$("#vi").value});
+  let u=j.video_url; if(location.protocol==="https:"&&u.startsWith("http:")&&!u.includes("127.0.0.1")&&!u.includes("localhost")) u=u.replace("http:","https:");
+  return `<video src="${esc(u)}" controls autoplay></video><p class="lead"><a style="color:var(--c)" href="${esc(u)}" target="_blank" rel="noopener">Open video file</a></p>`;
+});
+</script>
+</body>
+</html>
