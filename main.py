@@ -21,7 +21,13 @@ Path("videos").mkdir(exist_ok=True)
 Path("media").mkdir(exist_ok=True)
 Path("generated_scripts").mkdir(exist_ok=True)
 app.mount("/videos", StaticFiles(directory="videos"), name="videos")
-
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # tighten to your frontend URL later
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # welcome message :--->
 @app.get("/")                 # decorator 
 def home():
