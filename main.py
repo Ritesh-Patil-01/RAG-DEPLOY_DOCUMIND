@@ -48,7 +48,7 @@ class AnimationRequest(BaseModel) :
 
 load_dotenv() 
 client=Groq(api_key=os.getenv("GROQ_API_KEY"))
-
+MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 # Validation  and Error handling :--->
 @app.post("/chunk")           
 def chunk_text(data :TextRequest) :
@@ -101,7 +101,7 @@ def question_LLM(data: QueryRequest) :
         raise HTTPException(status_code=400,detail="query cant be empty")
     
     response =client.chat.completions.create(
-        model="llama-3.3-70b-versatile" ,
+        model=MODEL ,
         messages=[{"role":"user","content":data.query}])
     answer = response.choices[0].message.content 
 
@@ -120,7 +120,7 @@ def generate_code(data : CodeRequest) :
              """
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=MODEL,
         messages=[{"role":"user","content":prompt}])
     code = response.choices[0].message.content
 
@@ -139,7 +139,7 @@ def generate_manim(data: AnimationRequest) :
              """
     
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=MODEL,
         messages=[{"role":"user","content":prompt}])
     
     return{"idea":data.idea,"manim_code":response.choices[0].message.content}
@@ -158,7 +158,7 @@ def generate_video(request: Request, data : AnimationRequest) :
              """
     
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=MODEL,
         messages=[{"role":"user","content":prompt}])
     code=response.choices[0].message.content
     code = re.sub(r"```python","",code)
