@@ -25,8 +25,8 @@ from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://ritesh-patil-01.github.io/RAG-DEPLOY_DOCUMIND/"],   # tighten to your frontend URL later
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"]
 )
 # welcome message :--->
 @app.get("/")                 # decorator 
