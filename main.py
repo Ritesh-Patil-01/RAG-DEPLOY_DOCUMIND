@@ -24,7 +24,7 @@ app.mount("/videos", StaticFiles(directory="videos"), name="videos")
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tighten to your frontend URL later
+    allow_origins=["https://ritesh-patil-01.github.io/RAG-DEPLOY_DOCUMIND/"],   # tighten to your frontend URL later
     allow_methods=["*"],
     allow_headers=["*"],
 )
